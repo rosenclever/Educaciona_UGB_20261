@@ -13,5 +13,19 @@ namespace Acdemico.Controllers
         {
             return View(alunos);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Aluno aluno)
+        {
+            aluno.Id = alunos.Count + 1;
+            alunos.Add(aluno);
+            return RedirectToAction("Index");
+        }
     }
 }
