@@ -1,5 +1,6 @@
 ﻿using Acdemico.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Acdemico.Controllers
 {
@@ -23,7 +24,27 @@ namespace Acdemico.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Aluno aluno)
         {
-            aluno.Id = alunos.Count + 1;
+            var nextId = alunos.Any() ? alunos.Max(a => a.Id) + 1 : 1;
+            // VARIAVEL = CONDICIONAL ? VERDADEIRO : FALSO
+            aluno.Id = nextId;
+            alunos.Add(aluno);
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            return View(alunos.Where(a => a.Id == id).FirstOrDefault());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Aluno aluno)
+        {
+            alunos.Remove(alunos.Where(a => a.Id == aluno.Id).FirstOrDefault());
             alunos.Add(aluno);
             return RedirectToAction("Index");
         }
